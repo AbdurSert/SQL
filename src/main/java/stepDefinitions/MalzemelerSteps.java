@@ -16,7 +16,6 @@ import java.util.List;
 
 public class MalzemelerSteps extends TestBase {
 
-
     @Given("Kullanici database'e erisim saglar")
     public void kullaniciDatabaseEErisimSaglar() throws SQLException {
 
@@ -34,8 +33,7 @@ public class MalzemelerSteps extends TestBase {
     @Then("Kullanici tablodaki toplam urun sayisni dogrular")
     public void kullaniciTablodakiToplamUrunSayisniDogrular() throws SQLException {
 
-        int count = 1;
-        resultSet.first();
+        int count = 0;
 
         while(resultSet.next()){
 
@@ -54,11 +52,12 @@ public class MalzemelerSteps extends TestBase {
 
 
       resultSet.absolute(1);
+
       String highest = resultSet.getString("max");
 
-        System.out.println(highest);
+      System.out.println(highest);
 
-        Assert.assertTrue(highest.equals("120.75"));
+      Assert.assertTrue(highest.equals("120.75"));
 
 
     }
@@ -68,10 +67,17 @@ public class MalzemelerSteps extends TestBase {
 
         resultSet  = statement.executeQuery("Update malzemeler Set name = 'Vana' Where name = 'Vida' ");
 
-        resultSet.absolute(8);
-        String abc = resultSet.getString("name");
+        while(resultSet.next()){
 
-        System.out.println(abc);
+           String changedNAme =  resultSet.getString("name");
+
+           if(changedNAme.equals("Vana")){
+
+               Assert.assertTrue(changedNAme.equals("Vana"));
+
+           }
+
+        }
 
     }
 
@@ -80,7 +86,6 @@ public class MalzemelerSteps extends TestBase {
     public void kullaniciUrunlerinToplamFiyatininOrtalamsiniBulupDogrular() throws SQLException {
 
         resultSet= statement.executeQuery("SELECT AVG(price) FROM malzemeler;");
-
 
         resultSet.absolute(1);
         String avgPrice= resultSet.getString("avg").substring(0,6);
@@ -94,8 +99,18 @@ public class MalzemelerSteps extends TestBase {
     @And("Kullanici urunlerin basliklarini yazdirir")
     public void kullaniciUrunlerinBasliklariniYazdirir() throws SQLException {
 
+        List<String> titlesList = new ArrayList<String>();
 
+        resultSet= statement.executeQuery("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'malzemeler';");
 
+        while (resultSet.next()){
+
+        String titleOfProducts = resultSet.getString(1);
+
+        titlesList.add(titleOfProducts);
+    }
+
+        System.out.println(titlesList);
 
     }
 
@@ -104,11 +119,9 @@ public class MalzemelerSteps extends TestBase {
 
         List<String> urunList = new ArrayList<String>();
 
-        resultSet.first();
+        resultSet = statement.executeQuery("SELECT * FROM malzemeler");
 
         while (resultSet.next()){
-
-
 
             String urunler= resultSet.getString("name").toUpperCase();
 
@@ -124,10 +137,9 @@ public class MalzemelerSteps extends TestBase {
 
         List<String> urunList2 = new ArrayList<String>();
 
-        resultSet.first();
+        resultSet = statement.executeQuery("SELECT * FROM malzemeler");
 
         while (resultSet.next()){
-
 
 
             String urunler= resultSet.getString("name").toLowerCase();
@@ -144,11 +156,9 @@ public class MalzemelerSteps extends TestBase {
 
         List<String> urunList3 = new ArrayList<String>();
 
-        resultSet.first();
+        resultSet = statement.executeQuery("SELECT * FROM malzemeler");
 
         while (resultSet.next()){
-
-
 
             String urunler= resultSet.getString("name");
 
@@ -156,7 +166,6 @@ public class MalzemelerSteps extends TestBase {
         }
 
         System.out.println(urunList3);
-
 
 
     }
@@ -169,7 +178,6 @@ public class MalzemelerSteps extends TestBase {
 
         resultSet = statement.executeQuery("Select price from malzemeler where price < 10 order by price desc;");
 
-        resultSet.first();
         while(resultSet.next()){
 
             double pricesDesc = resultSet.getDouble(1);
@@ -179,9 +187,9 @@ public class MalzemelerSteps extends TestBase {
 
         System.out.println(priceListDesc);
 
-        resultSet = statement.executeQuery("Select name from malzemeler where price < 10 order by price desc;");
 
-        resultSet.first();
+        resultSet = statement.executeQuery("Select name from malzemeler where price < 10 order by name desc;");
+
         while(resultSet.next()){
 
             String nameDesc = resultSet.getString(1);
@@ -192,9 +200,7 @@ public class MalzemelerSteps extends TestBase {
 
         System.out.println(nameLIstDesc);
 
-
     }
-
 
     @Then("Kullanici tabloyu kapatir")
     public void kullaniciTabloyuKapatir() {

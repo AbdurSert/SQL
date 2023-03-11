@@ -5,7 +5,7 @@ Feature: Market database'indeki tablolarin dogrulanmasi
   Background:
     Given Kullanici database'e erisim saglar
 
-  Scenario: Toplma urun sayisinin bulunmasi
+  Scenario: Toplam urun sayisinin bulunmasi
 
     When Kullanici mlzemeler tablosuna gider
     Then Kullanici tablodaki toplam urun sayisni dogrular
